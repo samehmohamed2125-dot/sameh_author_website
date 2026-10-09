@@ -5,6 +5,7 @@ import { author, books } from '../src/content.js';
 import { render } from '../src/render.js';
 import { structuredData } from '../src/seo.js';
 import { prepareOrder } from '../src/commerce.js';
+import { readFile } from 'node:fs/promises';
 let server, base;
 before(async () => { server = createServer(); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve)); base = `http://127.0.0.1:${server.address().port}`; });
 after(() => new Promise(resolve => server.close(resolve)));
@@ -15,8 +16,27 @@ test('homepage preserves author text, Arabic RTL and book information', () => {
   for (const paragraph of books[0].description.split('\n\n')) assert.ok(html.includes(`<p>${paragraph}</p>`));
   assert.ok(html.includes(books[0].title));
   assert.ok(html.includes('400'));
-  assert.ok(html.includes('مساحة الغلاف الأصلي'));
+  assert.ok(!html.includes('مساحة الغلاف الأصلي'));
   assert.ok(!html.includes('تم الدفع'));
+});
+test('original cover appears in hero and book card and is served intact', async () => {
+  const html = render('/');
+  const hero = html.match(/<section[^>]*id="home"[\s\S]*?<\/section>/)[0];
+  const library = html.match(/<section[^>]*id="books"[\s\S]*?<\/section>/)[0];
+  for (const section of [hero, library]) {
+    assert.ok(section.includes(`src="${books[0].cover}"`));
+    assert.ok(section.includes(`alt="${books[0].coverAlt}"`));
+    assert.ok(section.includes('width="902" height="1280"'));
+  }
+  assert.ok(hero.includes('loading="eager" fetchpriority="high"'));
+  assert.ok(library.includes('loading="lazy"'));
+  for (const paragraph of books[0].description.split('\n\n')) assert.ok(library.includes(`<p>${paragraph}</p>`));
+  assert.ok(library.includes('400 جنيه مصري'));
+  assert.ok(library.includes('اشترِ الكتاب'));
+  const response = await fetch(base + books[0].cover);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('content-type'), 'image/jpeg');
+  assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(new URL('../public' + books[0].cover, import.meta.url)));
 });
 test('all public pages and assets are served, unknown routes return 404', async () => {
   for (const route of [...routes, '/styles.css', '/app.js', '/sitemap.xml', '/robots.txt']) assert.equal((await fetch(base + route)).status, 200, route);

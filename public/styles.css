@@ -3,3 +3,7 @@
 .brand .brand-name{font-family:Literary,'Traditional Arabic',Georgia,serif;font-size:clamp(19px,2.3vw,27px);letter-spacing:0;line-height:1.5;margin-top:0}
 .author-role{display:block;font-size:13px;color:#7a653e;margin-top:6px}
 .author-section .author-role{color:#d3bd8f}
+.hero-art .cover-image{width:min(100%,340px);height:auto;display:block;box-shadow:12px 15px 35px #504a3521}
+.book-card .cover-image{width:100%;height:auto;display:block;max-width:240px;margin-inline:auto}
+.book-card:only-child{grid-column:1/-1}
+@media(min-width:900px){.book-card:only-child{grid-template-columns:240px 1fr;gap:40px}}
