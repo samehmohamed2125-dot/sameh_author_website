@@ -1,3 +1,4 @@
+import { responsiveAttributes } from './image-assets.js';
 // Drafts are never listed, served, indexed or exported by the build.
 // Publish only after adding the exact approved text and an approved cover.
 export const articles = [{
@@ -73,7 +74,7 @@ export const publishedArticles = () => articles.filter(isPublishable);
 export const findArticle = path => publishedArticles().find(article => articlePath(article) === path);
 
 function image(image, escape, lazy = false) {
-  return `<img src="${escape(image.src)}" alt="${escape(image.alt)}" width="${image.width}" height="${image.height}" decoding="async" ${lazy ? 'loading="lazy"' : 'loading="eager" fetchpriority="high"'}>`;
+  return `<img src="${escape(image.src)}" alt="${escape(image.alt)}" width="${image.width}" height="${image.height}" decoding="async" ${responsiveAttributes(image.src, lazy ? '(min-width: 640px) 530px, calc(100vw - 78px)' : '(min-width: 890px) 850px, calc(100vw - 40px)', escape)} ${lazy ? 'loading="lazy"' : 'loading="eager" fetchpriority="high"'}>`;
 }
 
 export function writingsSection(escape, entries = publishedArticles()) {
