@@ -11,7 +11,8 @@ after(() => new Promise(resolve => server.close(resolve)));
 test('homepage preserves author text, Arabic RTL and book information', () => {
   const html = render('/');
   assert.ok(html.includes('lang="ar" dir="rtl"'));
-  assert.ok(html.includes(author.bio));
+  for (const paragraph of author.bio.split('\n\n')) assert.ok(html.includes(`<p>${paragraph}</p>`));
+  for (const paragraph of books[0].description.split('\n\n')) assert.ok(html.includes(`<p>${paragraph}</p>`));
   assert.ok(html.includes(books[0].title));
   assert.ok(html.includes('400'));
   assert.ok(html.includes('مساحة الغلاف الأصلي'));
