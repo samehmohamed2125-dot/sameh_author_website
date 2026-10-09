@@ -18,6 +18,7 @@ export const routes = [...publicRoutes(), ...Object.keys(policies)];
 export function sitemap() { return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${publicRoutes().map(route => `<url><loc>${(siteUrl() + route).replace(/&/g, '&amp;')}</loc></url>`).join('')}</urlset>`; }
 export function robots() { return `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${siteUrl()}/sitemap.xml\n`; }
 const assets = { '/styles.css': 'text/css; charset=utf-8', '/app.js': 'text/javascript; charset=utf-8', '/quotes.js': 'text/javascript; charset=utf-8', '/articles.js': 'text/javascript; charset=utf-8' };
+assets['/google010a1ca1522ed3ff.html'] = 'text/html; charset=utf-8';
 const imageTypes = { '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon' };
 for (const asset of [siteAssets.favicon, siteAssets.socialImage, author.portrait?.src, author.portrait?.original, ...books.map(book => book.cover), ...imageVariants, ...quotes.map(quote => quote.src), ...publishedArticles().flatMap(article => [article.cover.src, article.originalTextImage?.src])]) {
   if (!asset) continue;
