@@ -50,6 +50,70 @@ test('approved article is listed, served and indexed with its exact text and ori
   assert.equal(article.cover.height, 853);
 });
 
+test('Al Fadfada is served with approved 16:9 cover, paragraphs and sharing actions', async () => {
+  const article = articles.find(entry => entry.slug === 'al-fadfada');
+  assert.equal(article.title, 'الفضفضة');
+  assert.equal(article.status, 'published');
+  assert.equal(article.paragraphs.length, 7);
+  assert.equal(article.paragraphs.at(-1), 'سامح محمد عبد الظاهر');
+  assert.doesNotMatch(article.paragraphs.join('\n'), /حقوق النشر|المسؤولية القانونية/);
+  assert.equal(article.cover.width / article.cover.height, 16 / 9);
+  const path = articlePath(article);
+  assert.equal(path, '/writings/al-fadfada');
+  assert.ok(routes.includes(path));
+  assert.ok(sitemap().includes(path));
+  const home = render('/');
+  assert.ok(home.includes(`href="${path}"`));
+  assert.ok(home.includes(`src="${article.cover.src}"`));
+  const response = await fetch(base + path);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  for (const paragraph of article.paragraphs) assert.ok(html.includes(`<p>${escape(paragraph)}</p>`));
+  assert.ok(html.includes(`src="${article.cover.src}"`));
+  assert.ok(html.includes('width="1280" height="720"'));
+  assert.ok(html.includes('class="button article-share"'));
+  assert.ok(html.includes('class="button article-copy"'));
+  assert.ok(html.includes('lang="ar" dir="rtl"'));
+  assert.ok(!html.includes('noindex, follow'));
+  const cover = await fetch(base + article.cover.src);
+  assert.equal(cover.status, 200);
+  assert.deepEqual(Buffer.from(await cover.arrayBuffer()), await readFile(`public${article.cover.src}`));
+});
+
+test('Love Alone Is Not Enough preserves approved paragraphs and is served with its approved cover', async () => {
+  const article = articles.find(entry => entry.slug === 'al-hob-wahdahu-la-yakfi');
+  assert.equal(article.title, 'الحب وحده لا يكفي');
+  assert.deepEqual(article.paragraphs, [
+    'هل يستطيع الحب وحده إنقاذ إنسانًا يتآكل من الداخل يا رفيقي؟',
+    '– للأسف لا.',
+    '– لأن الحب الحقيقي يا رفيقي أشبه بضمادة رائعة، ولكنك ستضعها فوق نزيف داخلي مستمر.',
+    'وقد يشعرك بالأمان، ولكنه سيبقى عاجزًا عن بناء روحك من الداخل.',
+    'لا يكفي وجود ذراعين في العالم أن تنتشل شخصًا يسقط في قاع نفسه.',
+    'سامح محمد عبد الظاهر',
+  ]);
+  assert.equal(articlePath(article), '/writings/al-hob-wahdahu-la-yakfi');
+  assert.equal(article.status, 'published');
+  assert.equal(article.cover.width / article.cover.height, 16 / 9);
+  const path = articlePath(article);
+  assert.ok(routes.includes(path));
+  assert.ok(sitemap().includes(path));
+  assert.ok(render('/').includes(`href="${path}"`));
+  assert.ok(render('/').includes(`src="${article.cover.src}"`));
+  const response = await fetch(base + path);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  for (const paragraph of article.paragraphs) assert.ok(html.includes(`<p>${escape(paragraph)}</p>`));
+  assert.ok(html.includes(`src="${article.cover.src}"`));
+  assert.ok(html.includes('width="1280" height="720"'));
+  assert.ok(html.includes('class="button article-share"'));
+  assert.ok(html.includes('class="button article-copy"'));
+  assert.ok(!html.includes('noindex, follow'));
+  const cover = await fetch(base + article.cover.src);
+  assert.equal(cover.status, 200);
+  assert.deepEqual(Buffer.from(await cover.arrayBuffer()), await readFile(`public${article.cover.src}`));
+  assert.deepEqual(publishedArticles().map(entry => entry.slug), ['al-nakhl-la-yastaajil-al-balah', 'al-fadfada', 'al-hob-wahdahu-la-yakfi']);
+});
+
 // In-memory fixture only: never saved, built or published as article content.
 const fixture = {
   slug: 'test-only', title: 'اختبار داخلي', status: 'published',
@@ -85,7 +149,7 @@ test('prepared article card and page preserve paragraphs, escaping and sharing m
     assert.ok(html.includes('src="/articles.js"'));
     assert.ok(!html.includes('noindex, follow'));
   } finally { articles.pop(); }
-  assert.equal(publishedArticles().length, 1);
+  assert.equal(publishedArticles().length, 3);
 });
 
 test('article sharing supports native share, copy, cancellation and manual fallback', async () => {
