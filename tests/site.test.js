@@ -44,6 +44,21 @@ test('all public pages and assets are served, unknown routes return 404', async 
   assert.equal(response.status, 404);
   assert.ok((await response.text()).includes('هذه الصفحة ليست هنا'));
 });
+test('author portrait is accessible, complete and served through both image formats', async () => {
+  const html = render('/');
+  const section = html.match(/<section[^>]*id="author"[\s\S]*?<\/section>/)[0];
+  assert.ok(section.includes(`srcset="${author.portrait.src}" type="image/webp"`));
+  assert.ok(section.includes(`src="${author.portrait.original}"`));
+  assert.ok(section.includes(`alt="${author.portrait.alt}"`));
+  assert.ok(section.includes('width="720" height="1280" loading="lazy" decoding="async"'));
+  for (const paragraph of author.bio.split('\n\n')) assert.ok(section.includes(`<p>${paragraph}</p>`));
+  for (const [path, type] of [[author.portrait.src, 'image/webp'], [author.portrait.original, 'image/jpeg']]) {
+    const response = await fetch(base + path);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), type);
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(new URL('../public' + path, import.meta.url)));
+  }
+});
 test('structured data links author and book without inventing availability', () => {
   const graph = structuredData()['@graph'];
   assert.equal(graph[0].name, author.name);

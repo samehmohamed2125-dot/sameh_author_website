@@ -11,6 +11,12 @@ export const author = {
 
 ما يكتبه ليس بالضرورة صحيحًا في نظر الجميع، ولا يُشترط أن يتفق معه القارئ. إنها رؤيته للأشياء، وقد يجد فيها غيره شيئًا من رؤيته هو أيضًا.`,
   email: null,
+  portrait: {
+    src: '/images/sameh-author.webp',
+    original: '/images/sameh-author-original.jpg',
+    width: 720, height: 1280,
+    alt: 'سامح محمد عبد الظاهر جالس على مكتب الكتابة، ينظر بعيدًا عن الكاميرا بإضاءة ذهبية دافئة، وخلفه أوراق معلّقة على الحائط',
+  },
 };
 export const books = [{
   id: 'baad-menni-wa-menk', title: 'بعض مني ومنك', subtitle: 'عن النفس وما لا يراه أحد',

@@ -5,7 +5,7 @@ import { render } from './render.js';
 import { policies } from './content.js';
 import { siteUrl } from './seo.js';
 import { prepareOrder } from './commerce.js';
-import { books } from './content.js';
+import { books, author } from './content.js';
 import { siteAssets } from './site-config.js';
 import path from 'node:path';
 export const routes = ['/', ...Object.keys(policies)];
@@ -13,7 +13,7 @@ export function sitemap() { return `<?xml version="1.0" encoding="UTF-8"?><urlse
 export function robots() { return `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${siteUrl()}/sitemap.xml\n`; }
 const assets = { '/styles.css': 'text/css; charset=utf-8', '/app.js': 'text/javascript; charset=utf-8' };
 const imageTypes = { '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon' };
-for (const asset of [siteAssets.favicon, siteAssets.socialImage, ...books.map(book => book.cover)]) {
+for (const asset of [siteAssets.favicon, siteAssets.socialImage, author.portrait?.src, author.portrait?.original, ...books.map(book => book.cover)]) {
   if (!asset) continue;
   if (!/^\/[a-zA-Z0-9/_-]+\.(svg|png|jpe?g|webp|ico)$/.test(asset)) throw new Error('Public image must have a safe local asset path');
   assets[asset] = imageTypes[path.extname(asset)];

@@ -7,3 +7,6 @@
 .book-card .cover-image{width:100%;height:auto;display:block;max-width:240px;margin-inline:auto}
 .book-card:only-child{grid-column:1/-1}
 @media(min-width:900px){.book-card:only-child{grid-template-columns:240px 1fr;gap:40px}}
+.author-portrait{margin:0;align-self:start;width:min(100%,360px);margin-inline:auto}
+.author-portrait picture{display:block}
+.author-portrait img{display:block;width:100%;height:auto;object-fit:contain;border:1px solid #738174}
