@@ -1,7 +1,7 @@
 // Author-provided URLs. Keep the personal Facebook account and official page distinct.
 export const socialLinks = [
   { platform: 'facebook', label: 'فيسبوك — الحساب الشخصي', url: 'https://www.facebook.com/share/1Pve2xgSJm/' },
-  { platform: 'facebook', label: 'فيسبوك — الصفحة الرسمية', url: 'https://www.facebook.com/share/1MkVDfiUkx/' },
+  { platform: 'facebook', label: 'فيسبوك — الصفحة الرسمية', url: 'https://www.facebook.com/profile.php?id=61563070182737' },
   { platform: 'instagram', label: 'إنستجرام', url: 'https://www.instagram.com/sameh_abdelzaher_/' },
   { platform: 'tiktok', label: 'تيك توك', url: 'https://www.tiktok.com/@sameh_abdelzaher' },
   { platform: 'x', label: 'X (تويتر سابقًا)', url: 'https://x.com/hu1111000' },

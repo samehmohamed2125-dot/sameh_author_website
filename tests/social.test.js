@@ -11,7 +11,7 @@ test('contact section preserves all five exact official social links and account
   const links = [...section.matchAll(/<a class="social-link" href="([^"]+)" target="_blank" rel="noopener noreferrer">/g)].map(match => match[1]);
   assert.deepEqual(links, [
     'https://www.facebook.com/share/1Pve2xgSJm/',
-    'https://www.facebook.com/share/1MkVDfiUkx/',
+    'https://www.facebook.com/profile.php?id=61563070182737',
     'https://www.instagram.com/sameh_abdelzaher_/',
     'https://www.tiktok.com/@sameh_abdelzaher',
     'https://x.com/hu1111000',
