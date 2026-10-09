@@ -10,3 +10,23 @@
 .author-portrait{margin:0;align-self:start;width:min(100%,360px);margin-inline:auto}
 .author-portrait picture{display:block}
 .author-portrait img{display:block;width:100%;height:auto;object-fit:contain;border:1px solid #738174}
+.quote-gallery{display:grid;gap:28px;align-items:start}
+.quote-card{padding:18px;border:1px solid #dcd5c5;min-width:0}
+.quote-featured{grid-column:1/-1;width:min(100%,430px);justify-self:center}
+.quote-open,.quote-frame{display:block}
+.quote-frame{position:relative}
+.quote-frame img{display:block;width:100%;height:auto;object-fit:contain}
+/* Hide only the 280px black bands above/below the last 714 × 1280 original. */
+.quote-frame-trimmed{aspect-ratio:714/720;overflow:hidden}
+.quote-frame-trimmed img{position:absolute;top:0;transform:translateY(-21.875%)}
+.quote-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;font-size:12px}
+.quote-actions a,.quote-actions button{border:1px solid #cec7b6;padding:8px 12px;min-height:44px;background:transparent;color:inherit}
+.quote-status{font-size:12px;color:#676b60;margin:10px 0 0}
+.quote-status:empty{display:none}
+.quote-share-link{width:100%;margin-top:10px;padding:10px;border:1px solid #cec7b6;background:#fff;direction:ltr;font:inherit;font-size:12px}
+.quote-dialog{width:min(760px,calc(100% - 24px));padding:30px 20px;text-align:center}
+.quote-dialog h2{font-size:24px}
+.quote-dialog .quote-frame{width:min(100%,calc(65vh * 714 / 1280));margin-inline:auto}
+.quote-dialog .quote-frame-trimmed{width:min(100%,calc(65vh * 714 / 720))}
+.quote-dialog .text-link{margin-top:20px}
+@media(min-width:640px){.quote-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
