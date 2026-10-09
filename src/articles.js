@@ -3,10 +3,20 @@
 export const articles = [{
   slug: 'al-nakhl-la-yastaajil-al-balah',
   title: 'النخل لا يستعجل البلح',
-  status: 'draft',
-  paragraphs: [],
+  status: 'published',
+  paragraphs: [
+    'في الصعيد، كان أبي يقول إن النخل لا يستعجل البلح، ومع ذلك يظلّ واقفًا في الشمس.',
+    'تذكرت كلامه بعد سنوات العمل الأخيرة. حين كنت أعود من نوبات العمل الطويلة ورائحة التراب عالقة في حذائي.',
+    'تعلمت أن بعض الأبواب لا تُفتح بالقوة. بعضها يحتاج صبرًا يشبه الفجر، يأتي بطيئًا، لكنه حين يصل لا يستأذن العتمة. وعرفت أن ما تأخر عن موعده ليس بالضرورة ضاع، أحيانًا ينضج بعيدًا عن أعيننا، ثم يعود في الوقت الذي نكون فيه أكثر قدرة على حمله.',
+    'سامح محمد عبد الظاهر',
+  ],
   description: '',
-  cover: null, // { src: '/images/articles/...jpg', width, height, alt }
+  cover: {
+    src: '/images/articles/al-nakhl-la-yastaajil-al-balah.jpg',
+    width: 1280,
+    height: 853,
+    alt: 'غلاف مقال النخل لا يستعجل البلح: نخلة وقت الغروب، مع عنوان المقال واسم الكاتب سامح محمد عبد الظاهر',
+  },
   originalTextImage: null, // Optional approved original: same image fields as cover.
 }];
 

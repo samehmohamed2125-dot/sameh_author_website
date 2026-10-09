@@ -1,5 +1,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { articles, articlePath, isPublishable, publishedArticles, writingsSection, articlePage } from '../src/articles.js';
 import { render, escape } from '../src/render.js';
 import { createServer, routes, sitemap } from '../src/server.js';
@@ -13,25 +14,40 @@ before(async () => {
 });
 after(() => new Promise(resolve => server.close(resolve)));
 
-test('article remains a private empty draft and its stable route returns 404', async () => {
-  const draft = articles[0];
-  assert.equal(draft.title, 'النخل لا يستعجل البلح');
-  assert.equal(draft.status, 'draft');
-  assert.deepEqual(draft.paragraphs, []);
-  assert.equal(draft.cover, null);
-  const path = articlePath(draft);
+test('approved article is listed, served and indexed with its exact text and original cover', async () => {
+  const article = articles[0];
+  assert.equal(article.title, 'النخل لا يستعجل البلح');
+  assert.equal(article.status, 'published');
+  assert.equal(article.paragraphs.length, 4);
+  assert.equal(article.paragraphs[0], 'في الصعيد، كان أبي يقول إن النخل لا يستعجل البلح، ومع ذلك يظلّ واقفًا في الشمس.');
+  assert.equal(article.paragraphs.at(-1), 'سامح محمد عبد الظاهر');
+  assert.ok(article.paragraphs[2].endsWith('في الوقت الذي نكون فيه أكثر قدرة على حمله.'));
+  assert.doesNotMatch(article.paragraphs.join('\n'), /حروف تصف|حقوق|المسؤولية|القانونية/);
+  const path = articlePath(article);
   assert.equal(path, '/writings/al-nakhl-la-yastaajil-al-balah');
-  assert.ok(!routes.includes(path));
-  assert.ok(!sitemap().includes(path));
-  assert.equal((await fetch(base + path)).status, 404);
+  assert.ok(routes.includes(path));
+  assert.ok(sitemap().includes(path));
   const home = render('/');
-  assert.ok(home.includes('id="writings-title">من كتاباتي</h2>'));
-  assert.ok(!home.includes(draft.title));
-  assert.ok(!home.includes(path));
-  const missing = render(path);
-  assert.ok(missing.includes('noindex, follow'));
-  assert.ok(!missing.includes(draft.title));
-  assert.throws(() => articlePage(draft, escape, 'الكاتب'));
+  assert.ok(home.includes(`href="${path}"`));
+  assert.ok(home.includes(article.title));
+  assert.ok(home.includes(`src="${article.cover.src}"`));
+  const response = await fetch(base + path);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  for (const paragraph of article.paragraphs) assert.ok(html.includes(`<p>${escape(paragraph)}</p>`));
+  assert.ok(!html.includes('noindex, follow'));
+  assert.ok(html.includes(`src="${article.cover.src}"`));
+  assert.ok(html.includes('class="button article-share"'));
+  assert.ok(html.includes('class="button article-copy"'));
+  assert.ok(html.includes('property="og:image"'));
+  const cover = await fetch(base + article.cover.src);
+  assert.equal(cover.status, 200);
+  assert.equal(cover.headers.get('content-type'), 'image/jpeg');
+  assert.deepEqual(Buffer.from(await cover.arrayBuffer()), await readFile(`public${article.cover.src}`));
+  const css = await readFile('public/styles.css', 'utf8');
+  assert.match(css, /\.writing-cover img\{[^}]*object-fit:contain/);
+  assert.equal(article.cover.width, 1280);
+  assert.equal(article.cover.height, 853);
 });
 
 // In-memory fixture only: never saved, built or published as article content.
@@ -47,6 +63,7 @@ test('publication gate requires approved status, text and cover', () => {
     const invalid = { ...fixture, ...partial };
     assert.ok(!isPublishable(invalid));
     assert.ok(!writingsSection(escape, [invalid]).includes('writing-card'));
+    assert.throws(() => articlePage(invalid, escape, 'الكاتب'));
   }
 });
 
@@ -68,7 +85,7 @@ test('prepared article card and page preserve paragraphs, escaping and sharing m
     assert.ok(html.includes('src="/articles.js"'));
     assert.ok(!html.includes('noindex, follow'));
   } finally { articles.pop(); }
-  assert.equal(publishedArticles().length, 0);
+  assert.equal(publishedArticles().length, 1);
 });
 
 test('article sharing supports native share, copy, cancellation and manual fallback', async () => {

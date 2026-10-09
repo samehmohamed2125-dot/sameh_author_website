@@ -1,7 +1,7 @@
 import { test, after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer, routes } from '../src/server.js';
-import { author, books } from '../src/content.js';
+import { author, books, policies } from '../src/content.js';
 import { render } from '../src/render.js';
 import { structuredData } from '../src/seo.js';
 import { prepareOrder } from '../src/commerce.js';
@@ -80,5 +80,5 @@ test('API rejects malformed requests and cross-origin submissions', async () => 
   assert.equal((await fetch(base + '/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: 'x'.repeat(4097) })).status, 413);
 });
 test('policy pages clearly remain drafts and are not indexed', () => {
-  for (const route of routes.slice(1)) { const html = render(route); assert.ok(html.includes('مسودة هيكلية مؤقتة')); assert.ok(html.includes('noindex, follow')); }
+  for (const route of Object.keys(policies)) { const html = render(route); assert.ok(html.includes('مسودة هيكلية مؤقتة')); assert.ok(html.includes('noindex, follow')); }
 });
