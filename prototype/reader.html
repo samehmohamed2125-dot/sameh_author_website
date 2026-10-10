@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>نموذج قارئ «بعض مني ومنك» — معاينة غير منشورة</title>
+<style>
+:root{color-scheme:light;--ink:#293a32;--paper:#faf7f0;--sand:#eee8dc;--gold:#ad8951;--muted:#716e63}
+*{box-sizing:border-box}body{margin:0;background:#eae6dc;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.9}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+header{background:#30463b;color:#f6f1e7;padding:14px max(20px,calc((100vw - 1040px)/2));display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+header strong{font-family:Georgia,serif;font-size:21px}header span{font-size:12px;color:#d9d0be}
+main{max-width:1060px;margin:32px auto;padding:0 18px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
+aside,.reader{background:var(--paper);border:1px solid #d8d0be;box-shadow:0 12px 30px #3a362b12;border-radius:9px}
+aside{padding:22px;position:sticky;top:20px}aside img{display:block;max-width:150px;width:100%;height:auto;margin:0 auto 15px;box-shadow:5px 8px 16px #0002}aside h2{font-size:18px;margin:4px 0}aside p{font-size:12px;color:var(--muted);margin:0 0 18px}aside nav{display:grid;gap:7px}
+.chapter{display:block;width:100%;text-align:right;background:transparent;border:1px solid transparent;padding:9px 12px;border-radius:5px;color:var(--ink);font-size:13px}
+.chapter[aria-current="page"]{background:#e7e0d0;border-color:#c5b48e;font-weight:bold}
+.reader{overflow:hidden}.toolbar{background:#f2ecdf;border-bottom:1px solid #ded4c2;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 24px;flex-wrap:wrap;font-size:13px}
+.tag{background:#ded0ac;padding:3px 10px;border-radius:30px;font-size:11px;color:#4e422c}.paper{min-height:450px;padding:clamp(26px,5vw,66px);position:relative}
+.paper:before{content:"نموذج تجريبي — ليس محتوى الكتاب";position:absolute;left:10px;top:50%;transform:rotate(-35deg);color:#746c5822;font-size:clamp(16px,3vw,28px);font-weight:bold;pointer-events:none}
+.kicker{font-size:12px;color:#9a7747;letter-spacing:1px}.paper h1{font-family:Georgia,'Traditional Arabic',serif;font-size:clamp(30px,5vw,46px);line-height:1.5;margin:8px 0 25px}.paper p{font-size:clamp(16px,2.4vw,20px);line-height:2.4;max-width:58ch}.muted{color:var(--muted);font-size:13px}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 24px;border-top:1px solid #ded4c2;flex-wrap:wrap}
+.action{background:#30463b;border:1px solid #30463b;color:#fff;border-radius:5px;padding:9px 18px;min-height:43px}.action:disabled{background:#bbb;border-color:#bbb;cursor:not-allowed}.secondary{background:transparent;color:#30463b}.status{font-size:12px;color:var(--muted)}
+footer{max-width:1060px;margin:10px auto 36px;padding:0 18px;font-size:12px;color:#625d53}
+@media(max-width:760px){main{grid-template-columns:1fr;margin:18px auto}aside{position:static}aside img{max-width:90px;float:left;margin:0 0 10px 14px}aside nav{clear:both;grid-template-columns:repeat(2,minmax(0,1fr))}.chapter{font-size:12px}.paper{min-height:340px}}
+</style>
+</head>
+<body>
+<header><div><strong>بعض مني ومنك</strong><div><span>عن النفس وما لا يراه أحد — سامح محمد عبد الظاهر</span></div></div><span>معاينة واجهة القراءة فقط • لا يوجد شراء أو دخول فعلي</span></header>
+<main>
+<aside>
+<img src="../public/images/baad-menni-wa-menk-cover.jpg" alt="غلاف كتاب بعض مني ومنك">
+<h2>فهرس الأبواب</h2><p>عناوين الأبواب مستمدة من فهرس المخطوطة، أما نصوص العرض فهي توضيحية فقط.</p>
+<nav id="chapters" aria-label="أبواب الكتاب"></nav>
+</aside>
+<section class="reader" aria-label="نموذج قارئ الكتاب">
+<div class="toolbar"><span class="tag">قراءة داخل الموقع — نموذج</span><span id="chapter-counter"></span></div>
+<article class="paper" aria-live="polite"><div class="kicker" id="kicker"></div><h1 id="chapter-title"></h1><p id="sample-text"></p><p class="muted">هذا نص توضيحي للواجهة، وليس من الكتاب الأصلي. النص الكامل لن يُضاف إلى الملفات العامة.</p></article>
+<div class="controls"><button class="action secondary" id="prev" type="button">→ السابق</button><span class="status" id="progress" role="status"></span><button class="action" id="next" type="button">التالي ←</button></div>
+</section>
+</main>
+<footer>مهم: هذه واجهة تجريبية فقط، وليست نظام حماية أو دفع. تخزين آخر موضع قراءة هنا محلي داخل المتصفح؛ النسخة النهائية ستحتاج حسابات وصلاحيات وخادمًا وتخزينًا خاصًا للنصوص.</footer>
+<script>
+const chapters=[
+"بين الإيمان واليقين والعِوض",
+"الوعي واكتشاف الذات واسترداد الهوية",
+"الكرامة والحدود وفن الانسحاب",
+"هشاشة الداخل والكتمان والانهيار",
+"الخذلان والفراق ونهايات العلاقات",
+"الحب، القرب، وما لا يكفيه الحب",
+"الإنسان في مواجهة المجتمع وأقنعته"
+];
+const demo="هنا ستظهر صفحات الكتاب للقارئ الذي اشترى حق القراءة، بعد أن يتحقق الخادم من حسابه وصلاحياته. في هذه المعاينة نعرض نصًا تجريبيًا فقط، حتى لا يتسرب محتوى المخطوطة إلى ملفات الموقع العامة.";
+const key="reader-prototype-chapter-v1";
+let index=0;
+try{const saved=Number(localStorage.getItem(key));if(Number.isInteger(saved)&&saved>=0&&saved<chapters.length)index=saved;}catch{}
+const nav=document.getElementById("chapters");
+chapters.forEach((title,i)=>{const b=document.createElement("button");b.type="button";b.className="chapter";b.textContent=(i+1)+". "+title;b.addEventListener("click",()=>show(i));nav.appendChild(b);});
+function show(i){index=Math.max(0,Math.min(chapters.length-1,i));document.getElementById("chapter-title").textContent=chapters[index];document.getElementById("kicker").textContent="الباب "+(index+1);document.getElementById("sample-text").textContent=demo;document.getElementById("chapter-counter").textContent="الباب "+(index+1)+" من "+chapters.length;document.getElementById("progress").textContent="موضع القراءة التجريبي: "+(index+1)+" / "+chapters.length;document.getElementById("prev").disabled=index===0;document.getElementById("next").disabled=index===chapters.length-1;[...nav.children].forEach((b,j)=>{if(j===index)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});try{localStorage.setItem(key,String(index));}catch{}}
+document.getElementById("prev").addEventListener("click",()=>show(index-1));document.getElementById("next").addEventListener("click",()=>show(index+1));show(index);
+</script>
+</body></html>
