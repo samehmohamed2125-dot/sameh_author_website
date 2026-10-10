@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>نموذج قارئ «بعض مني ومنك» — معاينة غير منشورة</title>
+<title>قارئ «بعض مني ومنك» — التصميم المعتمد (نموذج)</title>
 <style>
 :root{color-scheme:light;--ink:#293a32;--paper:#faf7f0;--sand:#eee8dc;--gold:#ad8951;--muted:#716e63}
 *{box-sizing:border-box}body{margin:0;background:#eae6dc;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.9}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
@@ -23,6 +23,28 @@ aside{padding:22px;position:sticky;top:20px}aside img{display:block;max-width:15
 .action{background:#30463b;border:1px solid #30463b;color:#fff;border-radius:5px;padding:9px 18px;min-height:43px}.action:disabled{background:#bbb;border-color:#bbb;cursor:not-allowed}.secondary{background:transparent;color:#30463b}.status{font-size:12px;color:var(--muted)}
 footer{max-width:1060px;margin:10px auto 36px;padding:0 18px;font-size:12px;color:#625d53}
 @media(max-width:760px){main{grid-template-columns:1fr;margin:18px auto}aside{position:static}aside img{max-width:90px;float:left;margin:0 0 10px 14px}aside nav{clear:both;grid-template-columns:repeat(2,minmax(0,1fr))}.chapter{font-size:12px}.paper{min-height:340px}}
+
+/* Approved visual identity: 75% ivory paper / 25% petroleum accents.
+   Prototype only; no manuscript content or payment functionality. */
+:root{--petrol:#24545a;--petrol-dark:#173f46;--petrol-soft:#dbe7e3}
+body{background:radial-gradient(ellipse at 50% 52%,#eee5d5 0%,#e8dfd0 48%,#cbd7d2 100%)}
+header{background:linear-gradient(110deg,var(--petrol-dark),var(--petrol));border-bottom:3px solid #bdac88;box-shadow:0 6px 20px #173f4625}
+header strong{font-family:Georgia,'Traditional Arabic',serif;font-size:24px}
+aside,.reader{border-color:#b9c5bc;box-shadow:0 12px 30px #173f4620}
+aside{border-top:5px solid var(--petrol)}
+aside h2{color:var(--petrol-dark)}
+.chapter[aria-current="page"]{background:var(--petrol-soft);border-color:#a9c3ba;color:var(--petrol-dark)}
+.toolbar{background:#edf0e9;border-bottom-color:#b9c5bc;color:var(--petrol-dark)}
+.tag{background:var(--petrol);color:#fff}
+.paper{background:#fbf4e5;border-inline-start:8px solid #24545a30}
+.kicker{color:var(--petrol);font-weight:bold}
+.paper h1{color:#294d4c}
+.controls{background:#f8f3e9;border-top-color:#a4b8b1}
+.action{background:var(--petrol);border-color:var(--petrol)}
+.action:hover:not(:disabled){background:var(--petrol-dark)}
+.secondary{background:transparent;color:var(--petrol)}
+.status{color:var(--petrol-dark)}
+@media(max-width:760px){aside{border-top-width:4px}.paper{border-inline-start-width:5px}}
 </style>
 </head>
 <body>
