@@ -48,7 +48,8 @@ export function createServer() {
       }
       if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
       if (assets[pathname]) { const data = await readFile(new URL(`../public${pathname}`, import.meta.url)); res.writeHead(200, { 'Content-Type': assets[pathname], 'Cache-Control': 'public, max-age=3600' }); return res.end(req.method === 'HEAD' ? undefined : data); }
-      if (pathname === '/sitemap.xml' || pathname === '/robots.txt') { res.writeHead(200, { 'Content-Type': pathname.endsWith('.xml') ? 'application/xml; charset=utf-8' : 'text/plain; charset=utf-8' }); return res.end(req.method === 'HEAD' ? undefined : pathname.endsWith('.xml') ? sitemap() : robots()); }
+      if (pathname === '/sitemap.xml' || pathname === '/robots.txt') { const startedAt = process.hrtime.bigint();
+res.once('close', () => console.log(JSON.stringify({ t: new Date().toISOString(), m: req.method, p: pathname, ua: String(req.headers['user-agent'] || '').slice(0, 200), s: res.statusCode, ok: res.writableFinished, ms: Math.round(Number(process.hrtime.bigint() - startedAt) / 1e5) / 10, up: Math.round(process.uptime()) })));res.writeHead(200, { 'Content-Type': pathname.endsWith('.xml') ? 'application/xml; charset=utf-8' : 'text/plain; charset=utf-8' }); return res.end(req.method === 'HEAD' ? undefined : pathname.endsWith('.xml') ? sitemap() : robots()); }
       const exists = routes.includes(pathname);
       const html = render(pathname);
       const jsonLd = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
