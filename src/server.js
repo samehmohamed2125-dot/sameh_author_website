@@ -48,11 +48,18 @@ export function createServer() {
         }
         const html = await loadMadarV10();
         const analysis = analyzeMadarV10(html);
-        // Browser execution remains intentionally disabled pending SDK and RLS validation.
-        res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'");
+        // Functional mode is opt-in on loopback only, never available over Render.
+        // v10 currently uses inline event handlers and styles, so this CSP is
+        // intentionally restricted to the private local integration route.
+        const functional = process.env.MADAR_V10_LOCAL_FUNCTIONAL === '1';
+        const supabaseOrigin = 'https://zfxztrbpnhwonsdrhvcd.supabase.co';
+        const csp = functional
+          ? "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src " + supabaseOrigin + "; media-src 'self' blob: data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+          : "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
+        res.setHeader('Content-Security-Policy', csp);
         res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
         res.setHeader('Cache-Control', 'no-store');
-        res.setHeader('X-Madar-Integration-Status', 'visual-only');
+        res.setHeader('X-Madar-Integration-Status', functional ? 'local-functional' : 'visual-only');
         res.setHeader('X-Madar-Source-Bytes', String(analysis.bytes));
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         return res.end(req.method === 'HEAD' ? undefined : html);
