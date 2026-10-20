@@ -1,0 +1,26 @@
+name: Madar v10 isolated integration checks
+on:
+  push:
+    branches:
+      - feat/madar-sameh-v10-integration
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Syntax check
+        run: |
+          node --check src/server.js
+          node --check src/madar-integration.js
+          node --check tests/madar-v10-integration.test.js
+      - name: Existing and integration test suite
+        run: npm test
+      - name: Static build
+        run: npm run build
