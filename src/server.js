@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { loadMadarV10, analyzeMadarV10 } from './madar-integration.js';
 import { createHash } from 'node:crypto';
 import { bookPath } from './books.js';
 import { imageVariants } from './image-assets.js';
@@ -33,6 +34,29 @@ export function createServer() {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
     try {
       const pathname = new URL(req.url, 'http://localhost').pathname;
+      // Isolated integration preview, explicitly opt-in and bound to loopback.
+      // Never exposed by production Render configuration or public HTTP requests.
+      if (pathname === '/__integration/madar-v10') {
+        const loopback = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
+        if (process.env.MADAR_V10_LOCAL_PREVIEW !== '1' || !loopback) {
+          res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+          return res.end();
+        }
+        if (!['GET', 'HEAD'].includes(req.method)) {
+          res.writeHead(405, { Allow: 'GET, HEAD' });
+          return res.end();
+        }
+        const html = await loadMadarV10();
+        const analysis = analyzeMadarV10(html);
+        // Browser execution remains intentionally disabled pending SDK and RLS validation.
+        res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'");
+        res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+        res.setHeader('Cache-Control', 'no-store');
+        res.setHeader('X-Madar-Integration-Status', 'visual-only');
+        res.setHeader('X-Madar-Source-Bytes', String(analysis.bytes));
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(req.method === 'HEAD' ? undefined : html);
+      }
       if (pathname === '/api/orders') {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
