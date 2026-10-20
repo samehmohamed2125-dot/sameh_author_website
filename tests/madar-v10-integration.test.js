@@ -50,3 +50,26 @@ test('explicit local v10 preview is noindex and disables browser scripts', async
   assert.equal(response.headers.get('x-madar-integration-status'), 'visual-only');
   assert.match(await response.text(), /مدار سامح/);
 });
+
+test('functional Supabase preview is strictly opt-in, local and non-indexable', async t => {
+  const oldPreview = process.env.MADAR_V10_LOCAL_PREVIEW;
+  const oldFunctional = process.env.MADAR_V10_LOCAL_FUNCTIONAL;
+  process.env.MADAR_V10_LOCAL_PREVIEW = '1';
+  process.env.MADAR_V10_LOCAL_FUNCTIONAL = '1';
+  const server = createServer();
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(async () => {
+    await new Promise(resolve => server.close(resolve));
+    if (oldPreview === undefined) delete process.env.MADAR_V10_LOCAL_PREVIEW;
+    else process.env.MADAR_V10_LOCAL_PREVIEW = oldPreview;
+    if (oldFunctional === undefined) delete process.env.MADAR_V10_LOCAL_FUNCTIONAL;
+    else process.env.MADAR_V10_LOCAL_FUNCTIONAL = oldFunctional;
+  });
+  const url = 'http://127.0.0.1:' + server.address().port + '/__integration/madar-v10';
+  const response = await fetch(url);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('x-madar-integration-status'), 'local-functional');
+  assert.match(response.headers.get('content-security-policy'), /connect-src https:\/\/zfxztrbpnhwonsdrhvcd\.supabase\.co/);
+  assert.match(response.headers.get('x-robots-tag'), /noindex/);
+  assert.match(await response.text(), /استوديو سامح/);
+});
